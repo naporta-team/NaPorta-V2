@@ -50,9 +50,12 @@ class MenuItemsAdapter : RecyclerView.Adapter<MenuItemsAdapter.VH>() {
                 txtStatus.setBackgroundResource(R.drawable.bg_chip_inactive)
             }
 
-            if (!item.image_url.isNullOrBlank()) {
-                Glide.with(itemView.context).load(item.image_url).centerCrop().into(img)
-            }
+            Glide.with(itemView.context)
+                .load(item.image_url)
+                .placeholder(R.drawable.img_hamburguer)
+                .error(R.drawable.img_hamburguer)
+                .centerCrop()
+                .into(img)
         }
     }
 }

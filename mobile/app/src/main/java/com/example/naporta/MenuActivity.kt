@@ -36,17 +36,30 @@ class MenuActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu)
 
-        adapter = MenuGuestAdapter { item ->
-            val price = item.price.toDoubleOrNull() ?: 0.0
-            CartStore.add(CartItem(
-                productId = item.id.hashCode().toLong(),
-                menuItemId = item.id,
-                name = item.name,
-                price = price,
-                imageUrl = item.image_url ?: ""
-            ))
-            Toast.makeText(this, "${item.name} adicionado ao carrinho.", Toast.LENGTH_SHORT).show()
-        }
+        adapter = MenuGuestAdapter(
+            onAdd = { item ->
+                val price = item.price.toDoubleOrNull() ?: 0.0
+                CartStore.add(CartItem(
+                    productId = item.id.hashCode().toLong(),
+                    menuItemId = item.id,
+                    name = item.name,
+                    price = price,
+                    imageUrl = item.image_url ?: ""
+                ))
+                Toast.makeText(this, "${item.name} adicionado ao carrinho.", Toast.LENGTH_SHORT).show()
+            },
+            onDetails = { item ->
+                val intent = android.content.Intent(this, DishDetailsActivity::class.java).apply {
+                    putExtra("item_id", item.id)
+                    putExtra("item_name", item.name)
+                    putExtra("item_price", item.price)
+                    putExtra("item_description", item.description ?: "")
+                    putExtra("item_image_url", item.image_url ?: "")
+                    putExtra("item_category", item.category)
+                }
+                startActivity(intent)
+            }
+        )
 
         val recycler = findViewById<RecyclerView>(R.id.recyclerMenu)
         recycler.layoutManager = LinearLayoutManager(this)

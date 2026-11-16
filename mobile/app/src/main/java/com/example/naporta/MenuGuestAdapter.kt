@@ -12,7 +12,8 @@ import java.text.NumberFormat
 import java.util.Locale
 
 class MenuGuestAdapter(
-    private val onAdd: (MenuItemResponse) -> Unit
+    private val onAdd: (MenuItemResponse) -> Unit,
+    private val onDetails: (MenuItemResponse) -> Unit
 ) : RecyclerView.Adapter<MenuGuestAdapter.VH>() {
 
     private var items: List<MenuItemResponse> = emptyList()
@@ -42,12 +43,15 @@ class MenuGuestAdapter(
             txtPrice.text = NumberFormat.getCurrencyInstance(Locale("pt", "BR"))
                 .format(item.price.toDoubleOrNull() ?: 0.0)
 
-            if (!item.image_url.isNullOrBlank()) {
-                Glide.with(itemView.context).load(item.image_url).centerCrop().into(img)
-            }
+            Glide.with(itemView.context)
+                .load(item.image_url)
+                .placeholder(R.drawable.img_hamburguer)
+                .error(R.drawable.img_hamburguer)
+                .centerCrop()
+                .into(img)
 
             btnAdd.setOnClickListener { onAdd(item) }
-            itemView.setOnClickListener { onAdd(item) }
+            itemView.setOnClickListener { onDetails(item) }
         }
     }
 }
